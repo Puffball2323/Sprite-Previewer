@@ -57,15 +57,26 @@ class SpritePreview(QMainWindow):
         # need start & stop below label like in example screenshot
         self.startbutton = QPushButton("Start")
         self.startbutton.clicked.connect(self.push_start)
+
         image_layout.addWidget(self.startbutton)
         image_layout.addWidget(self.imageDisplay)
 
-        #on right need slider
+        # Fps display
+        image_layout.addWidget(QLabel("Frames per second:"))
+        self.fpsDisplay = QLabel(self.fps)
+        image_layout.addWidget(self.fpsDisplay)
 
+        # From here is for right side layout
+        # This is for adding slider
+        self.slider = QSlider()
+        self.slider.setRange(1, 100)
+        self.slider.setValue(1)
+        self.slider.valueChanged.connect(self.change)
 
-        #label that displays fps
+        # This is for slider tick marks
+        self.slider.setTickPosition(QSlider.TickPosition.TicksRight)
+        self.slider.setTickInterval(10)
 
-        #stop/start button
 
         #need menu
 
@@ -77,7 +88,7 @@ class SpritePreview(QMainWindow):
         # Create needed connections between the UI components and slot methods
         # you define in this class.
         base_layout.addLayout(image_layout)
-        #base_layout.addLayout(slider)
+        base_layout.addLayout(self.slider)
 
         frame.setLayout(base_layout)
         self.setCentralWidget(frame)
