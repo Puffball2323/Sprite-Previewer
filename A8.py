@@ -31,8 +31,12 @@ class SpritePreview(QMainWindow):
         # runs here
 
         #needs timer
+        self.timer = QTimer()
+        # self.timer.timeout.connect(self.next)
         #needs something to show the frames per second
+        self.fps = '1'
         #needs something to track image order
+        self.order = 0
 
         # Make the GUI in the setupUI method
         self.setupUI()
@@ -43,12 +47,21 @@ class SpritePreview(QMainWindow):
         frame = QFrame()
 
         #need layout for base + images
+        base_layout = QHBoxLayout()
+        image_layout = QVBoxLayout()
 
         # on the left need label with image like in example screenshot
+        self.imageDisplay = QLabel()
+        self.imageDisplay.setPixmap(self.frames[self.order])
 
         # need start & stop below label like in example screenshot
+        self.startbutton = QPushButton("Start")
+        self.startbutton.clicked.connect(self.push_start)
+        image_layout.addWidget(self.startbutton)
+        image_layout.addWidget(self.imageDisplay)
 
         #on right need slider
+
 
         #label that displays fps
 
@@ -63,18 +76,21 @@ class SpritePreview(QMainWindow):
 
         # Create needed connections between the UI components and slot methods
         # you define in this class.
+        base_layout.addLayout(image_layout)
+        #base_layout.addLayout(slider)
 
+        frame.setLayout(base_layout)
         self.setCentralWidget(frame)
 
     # You will need methods in the class to act as slots to connect to signals
 
-    def main():
-        app = QApplication([])
-        # Create our custom application
-        window = SpritePreview()
-        # And show it
-        window.show()
-        app.exec()
+def main():
+    app = QApplication([])
+    # Create our custom application
+    window = SpritePreview()
+    # And show it
+    window.show()
+    app.exec()
 
-    if __name__ == "__main__":
-        main()
+if __name__ == "__main__":
+    main()
