@@ -1,6 +1,5 @@
 #Name: Sprite-Previewer
 
-
 import math
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
@@ -27,9 +26,6 @@ class SpritePreview(QMainWindow):
         self.num_frames = 21
         self.frames = load_sprite('spriteImages',self.num_frames)
 
-        # Add any other instance variables needed to track information as the program
-        # runs here
-
         #needs timer
         self.timer = QTimer()
         self.timer.timeout.connect(self.next)
@@ -49,6 +45,7 @@ class SpritePreview(QMainWindow):
         #need layout for base + images
         base_layout = QHBoxLayout()
         image_layout = QVBoxLayout()
+        last_layout = QHBoxLayout()
 
         # on the left need label with image like in example screenshot
         self.image_display = QLabel()
@@ -58,7 +55,7 @@ class SpritePreview(QMainWindow):
         self.startbutton = QPushButton("Start")
         self.startbutton.clicked.connect(self.start)
 
-        image_layout.addWidget(self.startbutton)
+        last_layout.addWidget(self.startbutton)
         image_layout.addWidget(self.image_display)
 
         # Fps display
@@ -93,6 +90,7 @@ class SpritePreview(QMainWindow):
 
         # Create needed connections between the UI components and slot methods
         # you define in this class.
+        image_layout.addLayout(last_layout)
         base_layout.addLayout(image_layout)
         base_layout.addWidget(self.slider)
 
