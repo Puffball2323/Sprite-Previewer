@@ -32,7 +32,7 @@ class SpritePreview(QMainWindow):
 
         #needs timer
         self.timer = QTimer()
-        # self.timer.timeout.connect(self.next)
+        self.timer.timeout.connect(self.next)
         #needs something to show the frames per second
         self.fps = '1'
         #needs something to track image order
@@ -51,49 +51,85 @@ class SpritePreview(QMainWindow):
         image_layout = QVBoxLayout()
 
         # on the left need label with image like in example screenshot
-        self.imageDisplay = QLabel()
-        self.imageDisplay.setPixmap(self.frames[self.order])
+        self.image_display = QLabel()
+        self.image_display.setPixmap(self.frames[self.order])
 
         # need start & stop below label like in example screenshot
         self.startbutton = QPushButton("Start")
-        self.startbutton.clicked.connect(self.push_start)
+        self.startbutton.clicked.connect(self.start)
 
         image_layout.addWidget(self.startbutton)
-        image_layout.addWidget(self.imageDisplay)
+        image_layout.addWidget(self.image_display)
 
         # Fps display
         image_layout.addWidget(QLabel("Frames per second:"))
-        self.fpsDisplay = QLabel(self.fps)
-        image_layout.addWidget(self.fpsDisplay)
+        self.fps_display = QLabel(self.fps)
+        image_layout.addWidget(self.fps_display)
 
-        # From here is for right side layout
-        # This is for adding slider
+        #needs slider
         self.slider = QSlider()
         self.slider.setRange(1, 100)
         self.slider.setValue(1)
         self.slider.valueChanged.connect(self.change)
 
-        # This is for slider tick marks
+        #tick marks
         self.slider.setTickPosition(QSlider.TickPosition.TicksRight)
         self.slider.setTickInterval(10)
 
-
         #need menu
+        menubar = self.menuBar()
+        menubar.setNativeMenuBar(False)
+        base_menu = menubar.addMenu("&File")
 
         #inside menu need pause
+        pause = QAction("&Pause", self)
+        pause.triggered.connect(self.pauseRun)
+        base_menu.addAction(pause)
 
         #inside menu need exit
-
+        exit = QAction("&Exit", self)
+        exit.triggered.connect(self.exitRun)
+        base_menu.addAction(exit)
 
         # Create needed connections between the UI components and slot methods
         # you define in this class.
         base_layout.addLayout(image_layout)
-        base_layout.addLayout(self.slider)
+        base_layout.addWidget(self.slider)
 
         frame.setLayout(base_layout)
         self.setCentralWidget(frame)
 
     # You will need methods in the class to act as slots to connect to signals
+    def start(self):
+        fps_num = int(self.fps)
+        if self.startbutton.text() == "Start":
+            self.timer.start(int(1000 / fps_num))
+            self.startbutton.setText("Stop")
+        else:
+            self.timer.stop()
+            self.startbutton.setText("Start")
+
+    def change(self):
+        self.fps = self.slider.value()
+        self.fps_display.setText(str(self.fps))
+        if self.timer.isActive():
+            fps_num = int(self.fps)
+            self.timer.start(int(1000 / fps_num))
+
+    def next(self):
+        self.order += 1
+        if self.order >= self.num_frames:
+            self.order = 0
+        self.image_display.setPixmap(self.frames[self.order])
+        self.repaint()
+
+    def pauseRun(self):
+        self.timer.stop()
+        self.startbutton.setText("Start")
+
+    def exitRun(self):
+        self.close()
+
 
 def main():
     app = QApplication([])
